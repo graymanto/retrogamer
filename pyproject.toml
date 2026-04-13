@@ -1,0 +1,16 @@
+[project]
+name = "retrogamer"
+version = "0.1.0"
+description = "Games and framework for the Kitronik ZIP96 Retrogamer (Raspberry Pi Pico), with a pygame desktop emulator"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { file = "LICENSE" }
+dependencies = [
+    "pygame>=2.6.1",
+]
+
+[tool.uv]
+dev-dependencies = []
+
+[project.scripts]
+retrogamer = "run_emulator:main"
