@@ -30,7 +30,7 @@ from lib.engine.sprite import SCALE
 from lib.hal           import UP, DOWN, LEFT, RIGHT
 
 # ── Colors ────────────────────────────────────────────────────────────────────
-_FROG_C  = (0,   200,  0)
+_FROG_C  = (255, 220,  0)   # bright yellow — contrasts against all surface colours
 _WATER_C = (0,    0,  60)
 _BANK_C  = (0,   50,   0)
 _ROAD_C  = (30,  30,  30)

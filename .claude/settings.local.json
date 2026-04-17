@@ -12,7 +12,8 @@
       "Bash(python run_emulator.py pong)",
       "Bash(kill %1)",
       "Bash(python:*)",
-      "Bash(timeout 3 uv run python run_emulator.py tetris)"
+      "Bash(timeout 3 uv run python run_emulator.py tetris)",
+      "Bash(chmod +x:*)"
     ]
   }
 }
