@@ -6,10 +6,10 @@ from lib.engine.colors import WHITE
 from lib.utils.math_helpers import sign
 
 # Speed in SCALE units per second (pixels/sec * SCALE)
-BALL_SPEED_X_INIT = 7 * SCALE   # ~7 pixels/sec horizontal
-BALL_SPEED_Y_INIT = 4 * SCALE   # ~4 pixels/sec vertical
-BALL_SPEED_X_MAX  = 14 * SCALE
-BALL_SPEED_Y_MAX  = 10 * SCALE
+BALL_SPEED_X_INIT = 4 * SCALE   # ~4 pixels/sec horizontal
+BALL_SPEED_Y_INIT = 2 * SCALE   # ~2 pixels/sec vertical
+BALL_SPEED_X_MAX  = 9 * SCALE
+BALL_SPEED_Y_MAX  = 6 * SCALE
 BALL_SPEED_INCREMENT = SCALE    # +1 px/sec on each paddle hit
 
 
@@ -59,21 +59,24 @@ class Ball(Sprite):
         self.vel.y = -self.vel.y
 
     def check_wall_bounce(self):
-        """Return True if the ball hit a top or bottom wall and bounced."""
-        if self.pixel_y <= 0:
+        """Return True if the ball hit a top or bottom wall and bounced.
+
+        Uses sub-pixel pos (not pixel_y) so the condition only fires once per
+        bounce — not repeatedly while pixel_y stays at 0 due to accumulation lag.
+        The velocity-direction guard prevents re-triggering after the bounce.
+        """
+        if self.pos.y <= 0 and self.vel.y < 0:
             self.pos.y = 0
-            if self.vel.y < 0:
-                self.bounce_y()
+            self.vel.y = abs(self.vel.y)   # force moving down
             return True
-        if self.pixel_y >= 7:
+        if self.pos.y >= 7 * SCALE and self.vel.y > 0:
             self.pos.y = 7 * SCALE
-            if self.vel.y > 0:
-                self.bounce_y()
+            self.vel.y = -abs(self.vel.y)  # force moving up
             return True
         return False
 
     def is_off_left(self):
-        return self.pixel_x < 0
+        return self.pos.x < 0
 
     def is_off_right(self):
-        return self.pixel_x > 11
+        return self.pos.x > 11 * SCALE

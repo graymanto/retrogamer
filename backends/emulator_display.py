@@ -25,9 +25,7 @@ _BUTTON_LAYOUT = [
 ]
 _BUTTON_ACTIVE_COLOR = (220, 220, 80)
 _BUTTON_IDLE_COLOR   = (60,  60,  60)
-_BUTTON_RADIUS       = 8
-
-LABEL_FONT_SIZE = 14
+_BUTTON_RADIUS       = 11
 
 
 class EmulatorDisplay:
@@ -46,16 +44,6 @@ class EmulatorDisplay:
         self._pixels     = [[(0, 0, 0)] * DISPLAY_W for _ in range(DISPLAY_H)]
         self._brightness = 1.0
 
-        self._font = None
-        try:
-            pygame.font.init()
-            self._font = pygame.font.SysFont("Arial", LABEL_FONT_SIZE, bold=True)
-        except Exception:
-            try:
-                self._font = pygame.font.Font(None, LABEL_FONT_SIZE)
-            except Exception:
-                pass  # Font not available in headless mode — labels will be hidden
-
         self._win_w = win_w
         self._win_h = win_h
 
@@ -69,7 +57,9 @@ class EmulatorDisplay:
                 self._pixels[y][x] = color
 
     def set_brightness(self, level):
-        self._brightness = max(0.0, min(1.0, level / 100.0))
+        # Brightness control is a hardware-only concern (LED protection).
+        # The emulator always renders at full intensity so colours look vibrant.
+        self._brightness = 1.0
 
     def render(self, pressed_buttons=None):
         """Draw a full frame. pressed_buttons is a set of button name strings."""
@@ -116,16 +106,12 @@ class EmulatorDisplay:
         pygame.draw.rect(surf, (20, 20, 20), footer_rect)
         pygame.draw.line(surf, (50, 50, 50), (0, footer_y), (self._win_w, footer_y))
 
-        # Draw button indicators
+        # Draw button indicators (circles only — no labels)
         for label, xf, yf in _BUTTON_LAYOUT:
             cx = int(xf * self._win_w)
             cy = footer_y + int(yf * FOOTER_HEIGHT)
             active = label in pressed_buttons
             btn_color = _BUTTON_ACTIVE_COLOR if active else _BUTTON_IDLE_COLOR
             pygame.draw.circle(surf, btn_color, (cx, cy), _BUTTON_RADIUS)
-            if self._font:
-                txt_surf = self._font.render(label, True, (180, 180, 180))
-                txt_rect = txt_surf.get_rect(center=(cx, cy + _BUTTON_RADIUS + 9))
-                surf.blit(txt_surf, txt_rect)
 
         pygame.display.flip()

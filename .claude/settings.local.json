@@ -8,7 +8,11 @@
       "Bash(pip3 install:*)",
       "Bash(uv --version)",
       "Bash(uv init:*)",
-      "Bash(uv add:*)"
+      "Bash(uv add:*)",
+      "Bash(python run_emulator.py pong)",
+      "Bash(kill %1)",
+      "Bash(python:*)",
+      "Bash(timeout 3 uv run python run_emulator.py tetris)"
     ]
   }
 }

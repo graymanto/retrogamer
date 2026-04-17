@@ -76,7 +76,9 @@ class MenuState(GameState):
                 self._rp_y += 1
 
         # Button presses
-        if self.hal.is_pressed(A):
+        if self.hal.is_pressed(LEFT):
+            self.game.quit()   # return to launcher
+        elif self.hal.is_pressed(A):
             self.game.states.request_switch(PlayingState(self.game, two_player=False))
         elif self.hal.is_pressed(B):
             self.game.states.request_switch(PlayingState(self.game, two_player=True))
@@ -173,17 +175,23 @@ class PlayingState(GameState):
         if wall_hit:
             hal.play_tone(NOTE_WALL, 60)
 
-        # Paddle collisions
-        if self._ball.vel.x < 0 and self._ball.overlaps(self._left_pad):
-            # Hit left paddle — only bounce if moving left (prevent sticking)
-            self._ball.bounce_x(paddle_center_y=self._left_pad.center_y)
-            # Push ball clear of paddle to prevent sticking
-            self._ball.pos.x = (self._left_pad.pixel_x + 1) * SCALE
+        # Paddle collisions — use directional threshold instead of AABB so a
+        # fast ball that tunnels past the paddle column in one frame is still caught.
+        ball = self._ball
+        if (ball.vel.x < 0 and
+                ball.pixel_x <= self._left_pad.pixel_x and
+                ball.pixel_y < self._left_pad.pixel_y + self._left_pad.height and
+                ball.pixel_y + ball.height > self._left_pad.pixel_y):
+            ball.bounce_x(paddle_center_y=self._left_pad.center_y)
+            ball.pos.x = (self._left_pad.pixel_x + 1) * SCALE
             hal.play_tone(NOTE_PADDLE, 40)
 
-        elif self._ball.vel.x > 0 and self._ball.overlaps(self._right_pad):
-            self._ball.bounce_x(paddle_center_y=self._right_pad.center_y)
-            self._ball.pos.x = (self._right_pad.pixel_x - 1) * SCALE
+        elif (ball.vel.x > 0 and
+                ball.pixel_x >= self._right_pad.pixel_x and
+                ball.pixel_y < self._right_pad.pixel_y + self._right_pad.height and
+                ball.pixel_y + ball.height > self._right_pad.pixel_y):
+            ball.bounce_x(paddle_center_y=self._right_pad.center_y)
+            ball.pos.x = (self._right_pad.pixel_x - 1) * SCALE
             hal.play_tone(NOTE_PADDLE, 40)
 
         # Scoring
@@ -281,7 +289,9 @@ class GameOverState(GameState):
         self._timer += dt
         self._blink  = (self._timer // 350) % 2 == 0
 
-        if self._timer > 500 and self.hal.is_pressed(A):
+        if self._timer > 500 and self.hal.is_pressed(LEFT):
+            self.game.quit()   # return to launcher
+        elif self._timer > 500 and self.hal.is_pressed(A):
             self.game.states.request_switch(MenuState(self.game))
 
     def render(self):

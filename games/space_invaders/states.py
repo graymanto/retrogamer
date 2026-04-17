@@ -24,7 +24,7 @@ NOTE_WIN_3   = 784
 PLAYER_BULLET_COLOR  = YELLOW
 INVADER_BULLET_COLOR = RED
 
-MAX_INVADER_BULLETS = 3
+MAX_INVADER_BULLETS = 2
 
 
 class MenuState(GameState):
@@ -45,7 +45,9 @@ class MenuState(GameState):
         self._blink  = (self._timer // 400) % 2 == 0
         self._wave   = (self._timer // 300) % 4
 
-        if self.hal.is_pressed(A):
+        if self.hal.is_pressed(LEFT):
+            self.game.quit()   # return to launcher
+        elif self.hal.is_pressed(A):
             self.game.states.request_switch(PlayingState(self.game))
 
     def render(self):
@@ -154,17 +156,23 @@ class PlayingState(GameState):
             hal.play_tone(freq, 60)
 
         # Check if invaders reached player row
-        if self._invaders.has_reached_player():
+        if self._invaders.has_reached_player(self._player.y):
             self._start_explode()
             return
 
-        # Invader shooting
+        # Invader shooting — only spawn bullets that have at least 2 clear pixels
+        # of travel before reaching the player.  When invaders are very close to
+        # the bottom the player is already about to lose via has_reached_player();
+        # spawning a bullet 1 pixel above the player gives no meaningful reaction time.
         new_shots = self._invaders.update_shooting(dt)
         for sx, sy in new_shots:
+            bullet_y = sy + 1
+            if bullet_y >= self._player.y - 1:
+                continue   # Too close — bullet would be on or adjacent to player
             if len(self._inv_bullets) < MAX_INVADER_BULLETS:
                 self._inv_bullets.append(
-                    Bullet(sx, sy + 1, dy=1,
-                           color=INVADER_BULLET_COLOR, speed_ms=130)
+                    Bullet(sx, bullet_y, dy=1,
+                           color=INVADER_BULLET_COLOR, speed_ms=220)
                 )
 
         # Update invader bullets
@@ -255,7 +263,9 @@ class GameOverState(GameState):
         self._timer += dt
         self._blink  = (self._timer // 400) % 2 == 0
 
-        if self._timer > 800 and self.hal.is_pressed(A):
+        if self._timer > 800 and self.hal.is_pressed(LEFT):
+            self.game.quit()   # return to launcher
+        elif self._timer > 800 and self.hal.is_pressed(A):
             self.game.states.request_switch(MenuState(self.game))
 
     def render(self):

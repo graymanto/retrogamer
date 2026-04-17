@@ -25,7 +25,7 @@ class Player:
         self._move_initial = True   # True = waiting for initial delay
 
     def handle_input(self, hal, dt):
-        """Read HAL buttons and move accordingly. Returns 'left', 'right', or None."""
+        """Read HAL buttons and move accordingly. Returns the direction moved or None."""
         from lib.hal import LEFT, RIGHT
         direction = None
 
@@ -35,16 +35,24 @@ class Player:
             direction = 1
 
         if direction is None:
+            # No button held — reset repeat state for next press
             self._move_timer   = 0
             self._move_initial = True
             return None
 
-        self._move_timer += dt
-        threshold = MOVE_INITIAL_MS if self._move_initial else MOVE_REPEAT_MS
-
-        if self._move_timer >= threshold:
-            self._move_timer   = 0
+        # Move immediately on the first frame a button is pressed,
+        # then repeat at MOVE_REPEAT_MS intervals while it remains held.
+        if self._move_initial:
             self._move_initial = False
+            self._move_timer   = 0
+            new_x = self.x + direction
+            if 0 <= new_x <= 11:
+                self.x = new_x
+            return direction
+
+        self._move_timer += dt
+        if self._move_timer >= MOVE_REPEAT_MS:
+            self._move_timer = 0
             new_x = self.x + direction
             if 0 <= new_x <= 11:
                 self.x = new_x

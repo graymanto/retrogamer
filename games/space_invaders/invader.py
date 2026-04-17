@@ -34,7 +34,7 @@ class InvaderGrid:
         self._step_tone  = 0   # alternates 0/1 for march sound
 
         # Firing state per column: timer countdown until next shot
-        self._fire_timers = [random.randint(1000, 3000) for _ in range(cols)]
+        self._fire_timers = [random.randint(2500, 6000) for _ in range(cols)]
 
     # ---------- Grid queries ----------
 
@@ -48,14 +48,27 @@ class InvaderGrid:
         return n
 
     def _step_interval_ms(self):
-        """Speed increases as invaders die. Ranges from 800ms (full) to ~100ms (1 left)."""
+        """Speed increases as invaders die. Ranges from ~1300ms (full) to ~350ms (1 left)."""
         alive = self.alive_count()
-        total = self.cols * self.rows
-        return max(80, 80 + alive * 30)
+        return max(350, 350 + alive * 40)
 
-    def has_reached_player(self):
-        """True if bottom row of invaders has reached row 6 (player is row 7)."""
-        return self.y + self.rows - 1 >= 6
+    def _lowest_alive_row(self):
+        """Return the grid-row index of the lowest row containing at least one
+        alive invader, or None if the grid is empty."""
+        for row in range(self.rows - 1, -1, -1):
+            for col in range(self.cols):
+                if self.grid[row][col]:
+                    return row
+        return None
+
+    def has_reached_player(self, player_y=7):
+        """True if the lowest *alive* invader has reached the player's row.
+        Uses actual alive positions, not the grid boundary, so cleared bottom rows
+        are correctly ignored."""
+        lowest = self._lowest_alive_row()
+        if lowest is None:
+            return False   # No invaders left — wave is over, not game over
+        return self.y + lowest >= player_y
 
     # ---------- Update ----------
 
@@ -130,7 +143,7 @@ class InvaderGrid:
             self._fire_timers[col] -= dt
             if self._fire_timers[col] <= 0:
                 # Reset timer
-                self._fire_timers[col] = random.randint(1500, 4000)
+                self._fire_timers[col] = random.randint(3500, 8000)
                 # Find bottom-most alive invader in this column
                 shooter = self._bottom_invader(col)
                 if shooter is not None:
