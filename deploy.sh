@@ -61,6 +61,7 @@ mkdir_remote games/simon
 mkdir_remote games/frogger
 mkdir_remote games/flappy
 mkdir_remote games/tetris
+mkdir_remote games/platformer
 
 # ── Copy files ────────────────────────────────────────────────────────────────
 
@@ -123,10 +124,22 @@ for f in \
     games/flappy/states.py \
     games/tetris/__init__.py \
     games/tetris/game.py \
-    games/tetris/states.py
+    games/tetris/states.py \
+    games/platformer/__init__.py \
+    games/platformer/game.py \
+    games/platformer/states.py \
+    games/platformer/campaigns.py
 do
     cp_file "$f"
 done
+
+# ── Platformer campaign levels (managed by tools/screen_editor.py) ────────────
+# Edit this block via the CAMPAIGNS panel in the screen editor, not by hand.
+echo ""
+echo "Copying platformer campaigns..."
+# BEGIN_PLATFORMER_LEVELS
+cp_file games/platformer/levels.py
+# END_PLATFORMER_LEVELS
 
 echo ""
 echo "Copying entry point as main.py (MicroPython runs this on boot)..."

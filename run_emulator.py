@@ -69,9 +69,20 @@ def main():
             from games.tetris.game import TetrisGame
             TetrisGame(hal).run()
 
+        elif game_name in ("platformer", "pl"):
+            from games.platformer.game import PlatformerGame
+            levels = None
+            if "--levels" in sys.argv:
+                lvl_path = sys.argv[sys.argv.index("--levels") + 1]
+                with open(lvl_path) as _f:
+                    _ns = {}
+                    exec(_f.read(), _ns)
+                    levels = _ns.get("LEVELS")
+            PlatformerGame(hal, levels=levels).run()
+
         else:
             print("Unknown game: " + game_name)
-            print("Available: pong, space_invaders, snake, breakout, simon, frogger, flappy, tetris")
+            print("Available: pong, space_invaders, snake, breakout, simon, frogger, flappy, tetris, platformer")
             sys.exit(1)
 
 

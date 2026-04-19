@@ -62,9 +62,16 @@ def _make_tetris(hal):
     return TetrisGame(hal)
 
 
+# Platformer campaigns are managed by tools/screen_editor.py via
+# games/platformer/campaigns.py.  Each deployed campaign appears as its own
+# entry in the carousel with its own label and colour.
+try:
+    from games.platformer.campaigns import ENTRIES as _pl_entries
+except ImportError:
+    _pl_entries = []
+
 # Registry entries: (two_char_label, color, factory_fn)
 # factory_fn(hal) returns a ready-to-run BaseGame instance.
-# Add new games here — nothing else needs changing.
 GAME_REGISTRY = [
     ("PG", YELLOW,  _make_pong),
     ("SI", GREEN,   _make_space_invaders),
@@ -75,6 +82,8 @@ GAME_REGISTRY = [
     ("FB", CYAN,    _make_flappy),
     ("TE", PURPLE,  _make_tetris),
 ]
+for _e in _pl_entries:
+    GAME_REGISTRY.append(_e)
 
 
 class LauncherGame(BaseGame):
