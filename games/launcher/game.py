@@ -149,11 +149,31 @@ class LauncherGame(BaseGame):
             hal.set_pixel(11, 3, WHITE)
             hal.set_pixel(10, 4, DIM_WHITE)
 
-        # Position dots at row 0, centred across the display.
-        dot_x = (12 - n) // 2
-        for i in range(n):
-            c = color if i == idx else DIM_WHITE
-            hal.set_pixel(dot_x + i, 0, c)
+        # Position indicator at row 0.
+        # Up to 12 games: centred dots, one per game.
+        # More than 12: fixed 12-dot window that scrolls to keep the current
+        # selection visible, with dim edge dots hinting there are more entries.
+        if n <= 12:
+            dot_x = (12 - n) // 2
+            for i in range(n):
+                c = color if i == idx else DIM_WHITE
+                hal.set_pixel(dot_x + i, 0, c)
+        else:
+            # Scrolling window: keep idx in the middle where possible.
+            win_start = max(0, min(idx - 5, n - 12))
+            for sx in range(12):
+                gi = win_start + sx   # global game index this dot represents
+                if gi >= n:
+                    break
+                if gi == idx:
+                    c = color
+                elif sx == 0 and win_start > 0:
+                    c = DIM_WHITE      # left overflow hint
+                elif sx == 11 and win_start + 12 < n:
+                    c = DIM_WHITE      # right overflow hint
+                else:
+                    c = DIM_WHITE
+                hal.set_pixel(sx, 0, c)
 
         # Blinking "press A" indicator at row 7
         if self._blink:
