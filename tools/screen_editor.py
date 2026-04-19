@@ -4,9 +4,13 @@
 # Requires: pip install pygame
 #
 # Usage:
-#   python tools/screen_editor.py                            # edit built-in levels.py
-#   python tools/screen_editor.py --file my_campaign.py     # edit / create custom file
-#   python tools/screen_editor.py --file my_campaign.py --level 2
+#   python tools/screen_editor.py                                             # edit built-in levels.py
+#   python tools/screen_editor.py --file games/platformer/custom_world1.py   # create custom campaign
+#   python tools/screen_editor.py --file games/platformer/custom_world1.py --level 2
+#
+# Custom campaign files must be named custom_*.py inside games/platformer/ so
+# that they are gitignored (private to your machine) but still importable by
+# MicroPython on the Pico.  The CAMPAIGNS panel registers them for deployment.
 #
 # The CAMPAIGNS panel manages which level files appear in the on-device launcher
 # carousel. Changes are written to:

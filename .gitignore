@@ -15,3 +15,7 @@ build/
 
 # macOS
 .DS_Store
+
+# Custom platformer campaigns (not tracked in git)
+# Use: python tools/screen_editor.py --file games/platformer/custom_my_levels.py
+games/platformer/custom_*.py
