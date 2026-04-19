@@ -2,7 +2,7 @@
 
 Games and a development framework for the [Kitronik ZIP96 Retrogamer](https://kitronik.co.uk/products/5347-kitronik-zip-96-retro-gamer-for-raspberry-pi-pico), powered by a Raspberry Pi Pico.
 
-The project includes a **pygame desktop emulator** so games can be developed and tested on any Mac or PC without needing the hardware.
+The project includes a **pygame desktop emulator** so games can be developed and tested on any Mac or PC without needing the hardware, and a **graphical level editor** for designing custom Platformer campaigns.
 
 ---
 
@@ -13,7 +13,7 @@ The Kitronik ZIP96 Retrogamer has:
 | Feature | Detail |
 |---------|--------|
 | Display | 12 × 8 fully-addressable RGB LED matrix (96 LEDs) |
-| Buttons | Up, Down, Left, Right, A (mapped to `Z`), B (mapped to `X`) |
+| Buttons | Up, Down, Left, Right, A, B |
 | Audio | Piezo buzzer (30–3000 Hz) |
 | Haptics | Vibration motor |
 | Processor | Raspberry Pi Pico (MicroPython) |
@@ -22,25 +22,25 @@ The Kitronik ZIP96 Retrogamer has:
 
 ## Games
 
-A boot launcher lets you scroll through games with Left/Right and launch with A (`Z`).
+A boot launcher lets you scroll through games with Left/Right and launch with A.
 
 ### Pong
 
 Classic two-paddle Pong on the LED matrix.
 
-- **1-player** (`Z` on menu): you control the left paddle; the right is AI-controlled.
-- **2-player** (`X` on menu): left paddle = Up/Down, right paddle = A(`Z`)/B(`X`).
+- **1-player** (A on menu): you control the left paddle; the right is AI-controlled.
+- **2-player** (B on menu): left paddle = Up/Down, right paddle = A/B.
 - Ball speeds up with each rally. First to **5 goals** wins.
 - Sound on paddle hit, wall bounce, and score. Vibration on goal.
 
 | Context | Button | Action |
 |---------|--------|--------|
-| Menu | `Z` | Start 1-player vs AI |
-| Menu | `X` | Start 2-player |
+| Menu | A | Start 1-player vs AI |
+| Menu | B | Start 2-player |
 | Menu | Left | Back to launcher |
 | Game | Up / Down | Move left paddle |
-| Game (2P) | `Z` / `X` | Move right paddle |
-| Game Over | `Z` | Play again |
+| Game (2P) | A / B | Move right paddle |
+| Game Over | A | Play again |
 | Game Over | Left | Back to launcher |
 
 ---
@@ -57,11 +57,11 @@ Arcade-faithful Space Invaders with escalating waves.
 
 | Context | Button | Action |
 |---------|--------|--------|
-| Menu | `Z` | Start game |
+| Menu | A | Start game |
 | Menu | Left | Back to launcher |
 | Game | Left / Right | Move ship |
-| Game | `Z` | Fire |
-| Game Over | `Z` | Play again |
+| Game | A | Fire |
+| Game Over | A | Play again |
 | Game Over | Left | Back to launcher |
 
 ---
@@ -75,10 +75,10 @@ Classic Snake — eat food, grow longer, don't hit yourself.
 
 | Context | Button | Action |
 |---------|--------|--------|
-| Menu | `Z` | Start game |
+| Menu | A | Start game |
 | Menu | Left | Back to launcher |
 | Game | Up / Down / Left / Right | Steer snake |
-| Game Over | `Z` | Play again |
+| Game Over | A | Play again |
 | Game Over | Left | Back to launcher |
 
 ---
@@ -89,17 +89,17 @@ Classic Breakout with waves, lives, and increasing ball speed.
 
 - **4 rows of bricks**: Red (3 pts) · Orange (2 pts) · Yellow (1 pt) · Green (1 pt).
 - Score is multiplied by the current wave number.
-- Ball speeds up with every paddle hit (gently). Each new wave adds a base speed bonus.
+- Ball speeds up with every paddle hit. Each new wave adds a base speed bonus.
 - **3 lives** — shown as dots during the launch phase.
 - Clear all bricks to advance to the next wave.
 
 | Context | Button | Action |
 |---------|--------|--------|
-| Menu | `Z` | Start game |
+| Menu | A | Start game |
 | Menu | Left | Back to launcher |
 | Game | Left / Right | Move paddle |
-| Game | `Z` | Launch ball |
-| Game Over | `Z` | Play again |
+| Game | A | Launch ball |
+| Game Over | A | Play again |
 | Game Over | Left | Back to launcher |
 
 ---
@@ -118,8 +118,8 @@ Classic Simon Says memory sequence game.
 | Menu | Up | Back to launcher |
 | Game | Left | Press Red zone (top-left) |
 | Game | Right | Press Blue zone (top-right) |
-| Game | `Z` | Press Green zone (bottom-left) |
-| Game | `X` | Press Yellow zone (bottom-right) |
+| Game | A | Press Green zone (bottom-left) |
+| Game | B | Press Yellow zone (bottom-right) |
 | Game Over | Down | Play again |
 | Game Over | Up | Back to launcher |
 
@@ -133,7 +133,7 @@ Guide the frog from the bottom bank to the top, crossing two lanes of traffic an
 - **River lanes** (rows 1–3): logs scroll left and right — stay on a log or drown.
 - Reach the top row to score. The frog resets to the start for another crossing.
 - **3 lives.** Score = successful crossings.
-- **5 levels** of increasing speed, unlocked every 3 crossings. A brief level-up flash announces each new level. Level progress persists across deaths within a game.
+- **5 levels** of increasing speed, unlocked every 3 crossings.
 
 | Context | Button | Action |
 |---------|--------|--------|
@@ -149,16 +149,16 @@ Guide the frog from the bottom bank to the top, crossing two lanes of traffic an
 
 Guide the bird through an endless stream of pipes by tapping to flap.
 
-- Bird falls continuously under gravity — tap `A` or `B` to flap upward.
+- Bird falls continuously under gravity — tap A or B to flap upward.
 - Pipes have a 3-row gap; passing through scores 1 point.
 - Pipes speed up every 5 points scored (up to a cap).
-- Hit a pipe or fly off the top or bottom of the screen to die.
+- Hit a pipe or fly off the screen to die.
 
 | Context | Button | Action |
 |---------|--------|--------|
-| Menu | `A` or Down | Start game |
+| Menu | A or Down | Start game |
 | Menu | Up | Back to launcher |
-| Game | `A` or `B` | Flap |
+| Game | A or B | Flap |
 | Game Over | Down | Play again |
 | Game Over | Up | Back to launcher |
 
@@ -169,21 +169,107 @@ Guide the bird through an endless stream of pipes by tapping to flap.
 Classic Tetris on a 6-wide playfield with a sidebar showing the next piece.
 
 - All 7 tetrominoes (I, O, T, S, Z, J, L) with full rotation.
-- Hold Down to soft-drop; press `B` to hard-drop instantly.
-- Clear lines to score — more lines at once scores more. Score is multiplied by the current level.
+- Hold Down to soft-drop; press B to hard-drop instantly.
+- Clear lines to score — more lines at once scores more. Score multiplied by current level.
 - Speed increases every 5 lines cleared.
-- Game ends when a new piece cannot be placed at its spawn position.
 
 | Context | Button | Action |
 |---------|--------|--------|
-| Menu | `Z` or Down | Start game |
+| Menu | A or Down | Start game |
 | Menu | Left | Back to launcher |
 | Game | Left / Right | Move piece |
-| Game | `Z` or Up | Rotate piece |
+| Game | A or Up | Rotate piece |
 | Game | Down | Soft drop |
-| Game | `X` | Hard drop |
-| Game Over | `Z` or Down | Play again |
+| Game | B | Hard drop |
+| Game Over | A or Down | Play again |
 | Game Over | Left | Back to launcher |
+
+---
+
+### Platformer
+
+A scrolling platformer engine that also supports **auto-scroll / Geometry Dash mode**. Multiple level campaigns can be created with the [Level Editor](#level-editor) and deployed independently to the device — each appears as its own entry in the launcher carousel.
+
+- Tile types: platforms, hazards (instant death), coins (+1 score), and an exit tile.
+- **Normal mode** (`scroll: 0`): walk left/right and jump freely to reach the exit.
+- **Auto-scroll mode** (`scroll: N`): the world scrolls at N pixels/second; jump to survive.
+- **3 lives** shown as dots along the top edge.
+- Three built-in levels ship with the project.
+
+| Context | Button | Action |
+|---------|--------|--------|
+| Menu | A or Down | Start game |
+| Menu | Left | Back to launcher |
+| Game (normal) | Left / Right | Walk |
+| Game (normal) | Up or A | Jump |
+| Game (auto-scroll) | Up or A | Jump |
+| Game Over | A or Down | Play again |
+| Game Over | Left | Back to launcher |
+
+---
+
+## Level Editor
+
+`tools/screen_editor.py` is a desktop pygame application for designing Platformer levels. It runs on Mac/PC — no hardware required.
+
+```bash
+# Edit the built-in levels (games/platformer/levels.py)
+uv run python tools/screen_editor.py
+
+# Create or edit a custom campaign (gitignored — stays on your machine)
+uv run python tools/screen_editor.py --file games/platformer/custom_world1.py
+
+# Open a specific level index within a file
+uv run python tools/screen_editor.py --file games/platformer/custom_world1.py --level 2
+```
+
+### Editor layout
+
+```
+┌────────────────────────────────────────────┬──────────────┐
+│                                            │  Tile        │
+│           12 × 8 paint grid                │  palette     │
+│         (each cell = one LED pixel)        │  + controls  │
+│                                            │              │
+└──────────────────────── scrollbar ─────────┴──────────────┘
+         [ Add Level ]  [ Delete Level ]  [ CAMPAIGNS ]
+```
+
+### Editor controls
+
+| Input | Action |
+|-------|--------|
+| Left-click / drag | Paint selected tile |
+| Right-click / drag | Erase (paint sky) |
+| Scroll wheel | Scroll level horizontally |
+| `1` – `6` | Select tile from palette |
+| `S` | Save levels file |
+| Left / Right arrow | Scroll level one column |
+| PgUp / PgDn | Previous / next level |
+
+### Tile palette
+
+| Key | Tile | Description |
+|-----|------|-------------|
+| `1` | Sky | Empty / background |
+| `2` | Platform | Solid — player lands on and is blocked by these |
+| `3` | Hazard | Passable but lethal on contact |
+| `4` | Coin | Collectible — +1 score each |
+| `5` | Exit | Completes the level (normal mode only) |
+| `6` | Spawn | Where the player starts — treated as solid |
+
+### Level width and scroll speed
+
+Use the **Add Col / Remove Col** buttons in the panel to make a level wider than the 12-column viewport (up to any width). The **scroll speed** control sets auto-scroll mode:
+
+- `0` — normal platformer (player walks freely)
+- `≥ 1` — auto-scroll at that many pixels per second (Geometry Dash style)
+
+### Deploying a custom campaign
+
+Click **CAMPAIGNS** in the editor to open the campaign manager. Enter a 2-character label, choose a colour, and click **Deploy**. The editor updates `games/platformer/campaigns.py` and `deploy.sh` automatically — the campaign appears in the hardware launcher on next deploy.
+
+Custom campaign files must follow the naming convention `custom_*.py` inside `games/platformer/` so they are gitignored (private to your machine) but importable by MicroPython on the Pico.
 
 ---
 
@@ -211,15 +297,15 @@ cd retrogamer
 uv sync
 ```
 
-`uv sync` downloads Python 3.12 and installs all dependencies (pygame) into an isolated virtual environment. No system Python or manual `pip install` required.
+`uv sync` downloads Python 3.12 and installs pygame into an isolated virtual environment — no system Python or manual `pip install` needed.
 
 ### Run
 
 ```bash
-# Boot launcher (scroll with Left/Right, launch with Z)
+# Boot launcher (scroll with Left/Right, launch with A)
 uv run python run_emulator.py
 
-# Launch a specific game directly
+# Launch a specific game directly for development
 uv run python run_emulator.py pong
 uv run python run_emulator.py space_invaders
 uv run python run_emulator.py snake
@@ -228,17 +314,35 @@ uv run python run_emulator.py simon
 uv run python run_emulator.py frogger
 uv run python run_emulator.py flappy
 uv run python run_emulator.py tetris
+uv run python run_emulator.py platformer
+
+# Run the level editor
+uv run python tools/screen_editor.py
 ```
 
 ### Emulator controls
+
+The emulator accepts keyboard input and USB gamepads simultaneously.
+
+#### Keyboard
 
 | Key | Maps to |
 |-----|---------|
 | Arrow keys | Up / Down / Left / Right |
 | `Z` | A button |
 | `X` | B button |
-| Gamepad left stick / D-pad | Directions |
-| Gamepad buttons 0 / 1 | A / B |
+| `W` `A` `S` `D` | Up / Left / Down / Right (alternative) |
+
+#### Xbox controller (or any standard gamepad)
+
+| Control | Maps to |
+|---------|---------|
+| D-pad | Up / Down / Left / Right |
+| Left stick | Up / Down / Left / Right |
+| A button | A |
+| B button | B |
+
+Plug the controller in before launching. Multiple input sources work simultaneously — keyboard and controller can be used at the same time.
 
 ---
 
@@ -255,20 +359,16 @@ uv run python run_emulator.py tetris
 Connect the Pico via USB, then from the repo root:
 
 ```bash
-# Copy shared libraries and all games
-mpremote fs cp -r lib/   :lib/
-mpremote fs cp -r games/ :games/
+# Auto-detect port
+./deploy.sh
 
-# Copy the hardware HAL
-mpremote mkdir :backends
-mpremote fs cp backends/hardware_hal.py :backends/hardware_hal.py
-
-# Copy and launch the entry point
-mpremote fs cp run_hardware.py :run_hardware.py
-mpremote reset
+# Or specify the port explicitly
+./deploy.sh /dev/cu.usbmodem1101
 ```
 
-The device boots into the launcher automatically. Scroll with Left/Right, launch a game with A.
+`deploy.sh` creates the full directory tree on the Pico, copies all game files, and resets the device. It also copies any campaign level files registered via the level editor.
+
+The device boots into the launcher automatically on reset. Scroll with Left/Right, launch a game with A.
 
 ---
 
@@ -277,9 +377,9 @@ The device boots into the launcher automatically. Scroll with Left/Right, launch
 ```
 retrogamer/
 ├── run_emulator.py          # Desktop entry point
-├── run_hardware.py          # Pico entry point (deploy this to the device)
-├── pyproject.toml           # uv project file
-├── LICENSE
+├── run_hardware.py          # Pico entry point (deployed as main.py)
+├── deploy.sh                # One-command deploy to Pico via mpremote
+├── pyproject.toml           # uv project file (Python 3.12 + pygame)
 │
 ├── lib/                     # Shared libraries — MicroPython-compatible
 │   ├── hal/
@@ -287,56 +387,39 @@ retrogamer/
 │   │   └── interface.py     # BaseHAL duck-typed interface
 │   ├── engine/
 │   │   ├── colors.py        # Color constants + dim() / blend() helpers
-│   │   ├── font.py          # 3×5 pixel font for digits and letters
+│   │   ├── font.py          # 3×5 pixel font (digits and capital letters)
 │   │   ├── game.py          # BaseGame: 30 fps game loop, DISPLAY_W/H constants
-│   │   ├── sprite.py        # Sprite with integer fixed-point physics + AABB collision
+│   │   ├── sprite.py        # Sprite: integer fixed-point physics + AABB collision
 │   │   └── state.py         # StateMachine (stack-based) + GameState base class
 │   └── utils/
 │       └── math_helpers.py  # clamp(), sign(), lerp_int() — no math import needed
 │
 ├── backends/                # Platform-specific — never imported by lib/ or games/
-│   ├── emulator_hal.py      # EmulatorHAL: pygame window, keyboard, sound
-│   ├── emulator_display.py  # 12×8 LED grid with bezel and button footer strip
-│   ├── emulator_input.py    # Keyboard (arrows / Z / X) + gamepad → HAL buttons
-│   ├── emulator_audio.py    # Sine-wave synthesis via stdlib array (no numpy)
+│   ├── emulator_hal.py      # EmulatorHAL: wires display, input, and audio together
+│   ├── emulator_display.py  # 12×8 LED grid rendered in a pygame window with bezel
+│   ├── emulator_input.py    # Keyboard + Xbox controller / gamepad → HAL buttons
+│   ├── emulator_audio.py    # Sine-wave tone synthesis (no numpy required)
 │   └── hardware_hal.py      # HardwareHAL: wraps KitronikZIP96 (MicroPython only)
 │
-└── games/
-    ├── launcher/
-    │   └── game.py          # Boot carousel — scroll games, press A to launch
-    ├── pong/
-    │   ├── game.py          # PongGame(BaseGame)
-    │   ├── ball.py          # Ball sprite + bounce/angle logic
-    │   ├── paddle.py        # Paddle sprite
-    │   ├── ai.py            # Simple AI paddle controller
-    │   └── states.py        # MenuState · PlayingState · GameOverState
-    ├── space_invaders/
-    │   ├── game.py          # SpaceInvadersGame(BaseGame)
-    │   ├── invader.py       # InvaderGrid: 2D bool array, march/hit/shoot logic
-    │   ├── player.py        # Player ship with move-repeat input
-    │   ├── bullet.py        # Timer-based bullet (player and invader)
-    │   └── states.py        # MenuState · PlayingState · GameOverState
-    ├── snake/
-    │   ├── game.py          # SnakeGame(BaseGame)
-    │   └── states.py        # MenuState · PlayingState · GameOverState
-    ├── breakout/
-    │   ├── game.py          # BreakoutGame(BaseGame)
-    │   ├── ball.py          # Ball sprite + paddle bounce + speed ramp
-    │   ├── paddle.py        # Paddle sprite
-    │   ├── bricks.py        # BrickGrid: 4×12 grid with point values per row
-    │   └── states.py        # MenuState · PlayingState · GameOverState
-    ├── simon/
-    │   ├── game.py          # SimonGame(BaseGame)
-    │   └── states.py        # MenuState · PlayingState · GameOverState
-    ├── frogger/
-    │   ├── game.py          # FroggerGame(BaseGame)
-    │   └── states.py        # MenuState · PlayingState · GameOverState
-    ├── flappy/
-    │   ├── game.py          # FlappyGame(BaseGame)
-    │   └── states.py        # MenuState · PlayingState · GameOverState
-    └── tetris/
-        ├── game.py          # TetrisGame(BaseGame)
-        └── states.py        # MenuState · PlayingState · GameOverState
+├── games/
+│   ├── launcher/
+│   │   └── game.py          # Boot carousel — scroll games, press A to launch
+│   ├── pong/                # PongGame: 1P vs AI or 2P, score to 5
+│   ├── space_invaders/      # SpaceInvadersGame: escalating waves, invaders fire back
+│   ├── snake/               # SnakeGame: grow, don't self-collide, speed escalates
+│   ├── breakout/            # BreakoutGame: 4 brick rows, waves, speed ramp
+│   ├── simon/               # SimonGame: 4-button sequence memory
+│   ├── frogger/             # FroggerGame: road + river, 5 speed levels
+│   ├── flappy/              # FlappyGame: endless pipes, gravity, tap to flap
+│   ├── tetris/              # TetrisGame: 6-wide playfield, all 7 tetrominoes
+│   └── platformer/
+│       ├── game.py          # PlatformerGame(BaseGame) — accepts a levels argument
+│       ├── states.py        # MenuState · PlayingState · GameOverState + physics
+│       ├── levels.py        # Built-in campaign (3 levels, edited via screen editor)
+│       └── campaigns.py     # Campaign registry — managed by tools/screen_editor.py
+│
+└── tools/
+    └── screen_editor.py     # Desktop level editor: paint tiles, set scroll, deploy campaigns
 ```
 
 ### Architecture
@@ -372,6 +455,7 @@ EmulatorHAL  (Mac/PC)   |   HardwareHAL  (Raspberry Pi Pico)
    ]
    ```
 3. Add a direct-launch shortcut to `run_emulator.py` for development convenience.
+4. Add the game files to `deploy.sh` so they are copied to the Pico.
 
 Game code may use anything in `lib/` freely. It must not import from `backends/`. The HAL is always available as `self.hal` inside `BaseGame` and `GameState`.
 
