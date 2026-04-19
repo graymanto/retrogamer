@@ -58,7 +58,13 @@ class EmulatorInput:
                 self._joy_axes[event.axis] = event.value
                 self._update_joy_buttons()
 
+            # D-pad on Xbox controller (and most modern gamepads) fires as hat 0.
+            # Hat values: x: -1=left, 1=right; y: 1=up, -1=down (note: y is inverted vs screen).
+            elif event.type == pygame.JOYHATMOTION:
+                self._update_hat_buttons(event.value)
+
             elif event.type == pygame.JOYBUTTONDOWN:
+                # Xbox: 0=A, 1=B, 2=X, 3=Y
                 if event.button == 0:
                     self._pressed.add(A)
                 elif event.button == 1:
@@ -71,13 +77,11 @@ class EmulatorInput:
                     self._pressed.discard(B)
 
     def _update_joy_buttons(self):
-        """Convert analog axis values to digital button presses."""
+        """Convert left-stick analog axis values to digital button presses."""
         x = self._joy_axes.get(0, 0.0)
         y = self._joy_axes.get(1, 0.0)
 
-        for btn in (LEFT, RIGHT):
-            self._pressed.discard(btn)
-        for btn in (UP, DOWN):
+        for btn in (LEFT, RIGHT, UP, DOWN):
             self._pressed.discard(btn)
 
         if x < -AXIS_THRESHOLD:
@@ -88,6 +92,20 @@ class EmulatorInput:
         if y < -AXIS_THRESHOLD:
             self._pressed.add(UP)
         elif y > AXIS_THRESHOLD:
+            self._pressed.add(DOWN)
+
+    def _update_hat_buttons(self, hat_value):
+        """Convert D-pad hat (x, y) to button presses. Hat y: 1=up, -1=down."""
+        hx, hy = hat_value
+        for btn in (LEFT, RIGHT, UP, DOWN):
+            self._pressed.discard(btn)
+        if hx == -1:
+            self._pressed.add(LEFT)
+        elif hx == 1:
+            self._pressed.add(RIGHT)
+        if hy == 1:
+            self._pressed.add(UP)
+        elif hy == -1:
             self._pressed.add(DOWN)
 
     def is_pressed(self, button):
